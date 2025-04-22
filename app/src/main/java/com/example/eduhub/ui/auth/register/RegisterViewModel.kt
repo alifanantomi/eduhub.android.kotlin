@@ -1,0 +1,40 @@
+package com.example.eduhub.ui.auth.register
+
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+class RegisterViewModel: ViewModel() {
+    var state by mutableStateOf(RegisterState())
+        private set
+
+    fun onEmailChange(email: String) {
+        state = state.copy(email = email)
+    }
+
+    fun onPasswordChange(password: String) {
+        state = state.copy(password = password)
+    }
+    fun onConfirmPasswordChange(password: String) {
+        state = state.copy(confirmPassword = password)
+    }
+
+    fun onLoginClick() {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+
+            delay(1000)
+
+            Log.d("email", state.email)
+            Log.d("pass", state.password)
+            Log.d("cpass", state.confirmPassword)
+
+            state = state.copy(isLoading = false, error = null)
+        }
+    }
+}
