@@ -1,4 +1,4 @@
-package com.example.eduhub.ui.modules.list
+package com.example.eduhub.ui.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -6,10 +6,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ModuleListScreen() {
+fun ProfileScreen() {
     Box() {
-        Column() {
-            Text("Modules")
+        Column {
+            Text("Profile")
         }
     }
 }

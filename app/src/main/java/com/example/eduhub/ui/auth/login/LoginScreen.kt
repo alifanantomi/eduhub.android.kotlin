@@ -1,5 +1,6 @@
 package com.example.eduhub.ui.auth.login
 
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +26,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.eduhub.R
-import com.example.eduhub.ui.auth.register.RegisterScreen
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
-    navController: NavHostController
+    onNavigateToRegister: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     val background = MaterialTheme.colorScheme.background
     val surface = MaterialTheme.colorScheme.surface
@@ -40,6 +40,12 @@ fun LoginScreen(
     val onSurface = MaterialTheme.colorScheme.onSurface
 
     val state = viewModel.state
+
+    if (viewModel.navigateToHome) {
+        viewModel.onNavigatedToHome()
+
+        onNavigateToHome()
+    }
 
     Box(
         modifier = Modifier
@@ -91,6 +97,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.Unspecified),
+                        readOnly = state.isLoading
                     )
                     TextField(
                         value = state.password,
@@ -99,6 +106,7 @@ fun LoginScreen(
                         maxLines = 1,
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
+                        readOnly = state.isLoading
                     )
                 }
 
@@ -110,6 +118,10 @@ fun LoginScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        enabled = !state.isLoading
                     ) {
                         if (state.isLoading) {
                             CircularProgressIndicator(
@@ -118,7 +130,7 @@ fun LoginScreen(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Text("Login")
+                            Text("Continue")
                         }
                     }
 
@@ -129,16 +141,18 @@ fun LoginScreen(
                     TextButton(
                         onClick = { Log.d("Forgot", "") },
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        enabled = !state.isLoading
                     ) {
                         Text("Forgot Password?")
                     }
 
                     OutlinedButton(
-                        onClick = {  },
+                        onClick = { onNavigateToRegister() },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp)
+                            .height(50.dp),
+                        enabled = !state.isLoading
                     ) {
                         Text("Create an Account")
                     }
@@ -148,13 +162,13 @@ fun LoginScreen(
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-
-                        ) {
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         OutlinedButton(
                             onClick = { Log.d("Test", "") },
                             modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(vertical = 8.dp)
+                            contentPadding = PaddingValues(vertical = 8.dp),
+                            enabled = !state.isLoading
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_google_logo),
@@ -167,7 +181,8 @@ fun LoginScreen(
                         OutlinedButton(
                             onClick = { Log.d("Test", "") },
                             modifier = Modifier.weight(1f),
-                            contentPadding = PaddingValues(vertical = 8.dp)
+                            contentPadding = PaddingValues(vertical = 8.dp),
+                            enabled = !state.isLoading
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_github_logo),

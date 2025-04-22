@@ -13,15 +13,16 @@ class RegisterViewModel: ViewModel() {
     var state by mutableStateOf(RegisterState())
         private set
 
+    fun onNameChange(name: String) {
+        state = state.copy(name = name)
+    }
+
     fun onEmailChange(email: String) {
         state = state.copy(email = email)
     }
 
     fun onPasswordChange(password: String) {
         state = state.copy(password = password)
-    }
-    fun onConfirmPasswordChange(password: String) {
-        state = state.copy(confirmPassword = password)
     }
 
     fun onLoginClick() {
@@ -30,9 +31,9 @@ class RegisterViewModel: ViewModel() {
 
             delay(1000)
 
+            Log.d("name", state.name)
             Log.d("email", state.email)
             Log.d("pass", state.password)
-            Log.d("cpass", state.confirmPassword)
 
             state = state.copy(isLoading = false, error = null)
         }

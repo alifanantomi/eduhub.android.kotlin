@@ -13,6 +13,9 @@ class LoginViewModel: ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
 
+    private var _navigateToHome = mutableStateOf(false)
+    val navigateToHome: Boolean get() = _navigateToHome.value
+
     fun onEmailChange(email: String) {
         state = state.copy(email = email)
     }
@@ -31,6 +34,11 @@ class LoginViewModel: ViewModel() {
             Log.d("pass", state.password)
 
             state = state.copy(isLoading = false, error = null)
+            _navigateToHome.value = true
         }
+    }
+
+    fun onNavigatedToHome() {
+        _navigateToHome.value = false
     }
 }
