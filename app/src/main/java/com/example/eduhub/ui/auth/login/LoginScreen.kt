@@ -1,5 +1,6 @@
 package com.example.eduhub.ui.auth.login
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,9 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eduhub.R
+import com.example.eduhub.ui.theme.EduHubTheme
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -35,7 +39,6 @@ fun LoginScreen(
 ) {
     val background = MaterialTheme.colorScheme.background
     val surface = MaterialTheme.colorScheme.surface
-    val primary = MaterialTheme.colorScheme.primary
     val onSurface = MaterialTheme.colorScheme.onSurface
 
     val state = viewModel.state
@@ -198,4 +201,16 @@ fun LoginScreen(
 
     }
 
+}
+
+@Preview(showBackground = true, device = PIXEL_7A, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, device = PIXEL_7A, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun LoginPreview() {
+    EduHubTheme {
+        LoginScreen(
+            onNavigateToRegister = {},
+            onNavigateToHome = {}
+        )
+    }
 }
