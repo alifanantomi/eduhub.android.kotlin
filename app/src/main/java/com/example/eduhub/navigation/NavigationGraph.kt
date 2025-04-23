@@ -14,7 +14,7 @@ import com.example.eduhub.ui.profile.ProfileScreen
 @Composable
 fun EduHubNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,

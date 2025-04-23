@@ -1,6 +1,5 @@
 package com.example.eduhub.ui.auth.login
 
-import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,18 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eduhub.R
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
     onNavigateToRegister: () -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToHome: () -> Unit,
 ) {
     val background = MaterialTheme.colorScheme.background
     val surface = MaterialTheme.colorScheme.surface
@@ -68,7 +67,6 @@ fun LoginScreen(
                 Text(
                     text = "Sign in to EduHub",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
                     color = onSurface,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -97,7 +95,8 @@ fun LoginScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.Unspecified),
-                        readOnly = state.isLoading
+                        readOnly = state.isLoading,
+                        textStyle = MaterialTheme.typography.labelLarge
                     )
                     TextField(
                         value = state.password,
@@ -106,7 +105,8 @@ fun LoginScreen(
                         maxLines = 1,
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
-                        readOnly = state.isLoading
+                        readOnly = state.isLoading,
+                        textStyle = MaterialTheme.typography.labelLarge
                     )
                 }
 
@@ -121,7 +121,7 @@ fun LoginScreen(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
-                        enabled = !state.isLoading
+                        enabled = !state.isLoading,
                     ) {
                         if (state.isLoading) {
                             CircularProgressIndicator(
