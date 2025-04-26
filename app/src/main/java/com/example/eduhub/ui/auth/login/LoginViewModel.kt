@@ -40,7 +40,6 @@ class LoginViewModel: ViewModel() {
                 duration = SnackbarDuration.Short
             )
 
-
             state = state.copy(isLoading = false, error = null)
             _navigateToHome.value = true
         }

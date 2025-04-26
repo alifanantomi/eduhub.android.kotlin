@@ -1,13 +1,20 @@
 package com.example.eduhub.ui
 
+import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,25 +31,34 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.eduhub.ui.snackbar.AppSnackbarController
 import com.example.eduhub.ui.snackbar.SnackbarController
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EduHubApp() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
-    val currentRoute = currentDestination?.route ?: Destinations.LOGIN_ROUTE
+    val currentRoute = currentDestination?.route ?: Destinations.MODULE_DETAIL_ROUTE
+
 
     val showBottomNav = when {
         currentRoute.startsWith("login") -> false
         currentRoute.startsWith("register") -> false
         currentRoute.startsWith("forgot_password") -> false
+        currentRoute.startsWith("module/{module}") -> false
         currentRoute.startsWith("admin/") -> false
         else -> true
     }
@@ -67,7 +83,47 @@ fun EduHubApp() {
         }
     }
 
+    val showTopBar = when {
+        currentRoute.startsWith("module/{module}") -> true
+        else -> false
+    }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        topBar = {
+            val collapsedFraction = scrollBehavior.state.collapsedFraction
+            val dynamicFontSize = lerp(24.sp, 18.sp, collapsedFraction)
+
+            if (showTopBar) {
+                LargeTopAppBar(
+                    modifier = Modifier.padding(0.dp),
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        scrolledContainerColor = MaterialTheme.colorScheme.inversePrimary,
+                        titleContentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    title = {
+                        Text(
+                            text = "Computer Science: Programming with a Purpose",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontSize = dynamicFontSize
+                            ),
+                            maxLines = if (collapsedFraction < 0.5f) 2 else 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior
+                )
+            }
+        },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { snackbarData ->
                 Snackbar(
@@ -138,11 +194,19 @@ fun EduHubApp() {
                     )
                 }
             }
-        }
-    ) { innerPadding ->
+        },
+    ) {
         EduHubNavHost(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(it),
+            scrollBehavior = if (showTopBar) scrollBehavior else null
         )
     }
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_7A, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, device = Devices.PIXEL_7A, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun EduHubAppPreview() {
+    EduHubApp()
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
@@ -70,6 +71,7 @@ fun LoginScreen(
                 Text(
                     text = "Sign in to EduHub",
                     style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
                     color = onSurface,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -133,7 +135,12 @@ fun LoginScreen(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Text("Continue")
+                            Text(
+                                text = "Continue",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
 
@@ -147,7 +154,12 @@ fun LoginScreen(
                             .fillMaxWidth(),
                         enabled = !state.isLoading
                     ) {
-                        Text("Forgot Password?")
+                        Text(
+                            text = "Forgot password?",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
                     }
 
                     OutlinedButton(
@@ -157,10 +169,20 @@ fun LoginScreen(
                             .height(50.dp),
                         enabled = !state.isLoading
                     ) {
-                        Text("Create an Account")
+                        Text(
+                            text = "Create an account",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
                     }
 
-                    Text("or", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    Text(
+                        text = "or",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Row (
                         modifier = Modifier.fillMaxWidth(),
