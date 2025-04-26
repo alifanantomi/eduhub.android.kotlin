@@ -56,7 +56,9 @@ fun EduHubNavHost(
         }
 
         composable(Destinations.PROFILE_ROUTE) {
-            ProfileScreen()
+            ProfileScreen(
+                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) }
+            )
         }
 
         composable(Destinations.MODULE_DETAIL_ROUTE) {
