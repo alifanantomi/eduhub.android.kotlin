@@ -13,14 +13,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,21 +28,27 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.eduhub.R
+import com.example.eduhub.ui.components.AlertDialogConfirmation
 import com.example.eduhub.ui.modules.list.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
 @Composable
 fun AuthorInfo() {
+    var expanded by remember { mutableStateOf(false) }
+    val openAlertDialog = remember { mutableStateOf(false) }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -97,21 +103,51 @@ fun AuthorInfo() {
                     style = MaterialTheme.typography.labelLarge
                 )
             }
-            IconButton (
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .border(
-                        width = 1.dp,
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(50)
-                    ),
-                onClick = { Log.d("Test", "") },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "More",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            Box {
+                IconButton (
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .border(
+                            width = 1.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(50)
+                        ),
+                    onClick = { expanded = !expanded },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Settings") },
+                        onClick = {  }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Sign Out") },
+                        onClick = { openAlertDialog.value = true }
+                    )
+                }
+            }
+
+            when {
+                openAlertDialog.value -> {
+                    AlertDialogConfirmation(
+                        onDismissRequest = { openAlertDialog.value = false },
+                        onConfirmation = {
+                            openAlertDialog.value = false
+                            print("Sign out?")
+                        },
+                        dialogTitle = "Sign Out",
+                        dialogText = "Are you sure you want to sign out?",
+                        icon = Icons.Default.Info
+                    )
+                }
             }
         }
     }
