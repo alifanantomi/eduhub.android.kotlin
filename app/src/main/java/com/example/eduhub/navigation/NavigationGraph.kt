@@ -13,6 +13,7 @@ import com.example.eduhub.ui.home.HomeScreen
 import com.example.eduhub.ui.modules.detail.ModuleDetailScreen
 import com.example.eduhub.ui.modules.list.ModuleListScreen
 import com.example.eduhub.ui.profile.ProfileScreen
+import com.example.eduhub.ui.splash.SplashScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,9 +24,16 @@ fun EduHubNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Destinations.LOGIN_ROUTE,
+        startDestination = Destinations.SPLASH_ROUTE,
         modifier = modifier
     ) {
+        composable(Destinations.SPLASH_ROUTE) {
+            SplashScreen(
+                navigateToHome = { navController.navigate(Destinations.HOME_ROUTE) },
+                navigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) }
+            )
+        }
+
         composable(Destinations.LOGIN_ROUTE) {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate(Destinations.REGISTER_ROUTER) },
@@ -33,7 +41,8 @@ fun EduHubNavHost(
                     navController.navigate(Destinations.HOME_ROUTE) {
                         popUpTo(Destinations.LOGIN_ROUTE) { inclusive = true }
                     }
-                }
+                },
+                onNavigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) }
             )
         }
 
@@ -57,7 +66,10 @@ fun EduHubNavHost(
 
         composable(Destinations.PROFILE_ROUTE) {
             ProfileScreen(
-                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) }
+                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) },
+                onNavigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) {
+                    popUpTo(Destinations.PROFILE_ROUTE) { inclusive = true }
+                } }
             )
         }
 

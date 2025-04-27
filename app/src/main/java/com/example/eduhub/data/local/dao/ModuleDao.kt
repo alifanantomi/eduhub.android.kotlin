@@ -1,6 +1,6 @@
 package com.example.eduhub.data.local.dao
 
-import com.example.eduhub.data.models.Module
+import com.example.eduhub.data.model.Module
 
 interface ModuleDao {
     suspend fun getAllModules(): List<Module>

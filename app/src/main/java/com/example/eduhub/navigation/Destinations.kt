@@ -1,6 +1,8 @@
 package com.example.eduhub.navigation
 
 object Destinations {
+    const val SPLASH_ROUTE = "splash"
+
     const val LOGIN_ROUTE = "login"
     const val REGISTER_ROUTER = "register"
     const val FORGOT_PASSWORD_ROUTE = "forgot_password"

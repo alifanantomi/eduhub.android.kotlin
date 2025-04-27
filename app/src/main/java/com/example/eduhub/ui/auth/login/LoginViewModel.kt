@@ -1,22 +1,28 @@
 package com.example.eduhub.ui.auth.login
 
 import android.util.Log
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.example.eduhub.ui.snackbar.AppSnackbarController
+import com.example.eduhub.data.repository.AuthRepositoryInterface
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
+import com.example.eduhub.data.model.Result
 
-class LoginViewModel: ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepositoryInterface
+): ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
 
-    private var _navigateToHome = mutableStateOf(false)
-    val navigateToHome: Boolean get() = _navigateToHome.value
+    private val _uiEvent = MutableSharedFlow<LoginUIEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     fun onEmailChange(email: String) {
         state = state.copy(email = email)
@@ -28,24 +34,29 @@ class LoginViewModel: ViewModel() {
 
     fun onLoginClick() {
         viewModelScope.launch {
+            if (state.email.isBlank() || state.password.isBlank()) {
+                _uiEvent.emit(LoginUIEvent.ShowSnackbar("Please fill in all fields"))
+                return@launch
+            }
+
             state = state.copy(isLoading = true)
 
-            delay(500)
+            when (val result = authRepository.login(state.email, state.password)) {
+                is Result.Success -> {
+                    state = state.copy(isLoading = false)
+                    _uiEvent.emit(LoginUIEvent.NavigateToHome)
+                    _uiEvent.emit(LoginUIEvent.ShowSnackbar("Welcome, ${result.data.name}!"))
+                }
+                is Result.Error -> {
+                    Log.e("LoginViewModel", "Error: $result")
 
-            Log.d("email", state.email)
-            Log.d("pass", state.password)
+                    state = state.copy(isLoading = false, error = result.exception.message)
+                    _uiEvent.emit(LoginUIEvent.ShowSnackbar(result.exception.message.toString()))
+                }
+                is Result.Loading -> {
 
-            AppSnackbarController.controller.showSnackbar(
-                message = "Success signing in!",
-                duration = SnackbarDuration.Short
-            )
-
-            state = state.copy(isLoading = false, error = null)
-            _navigateToHome.value = true
+                }
+            }
         }
-    }
-
-    fun onNavigatedToHome() {
-        _navigateToHome.value = false
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -28,6 +29,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,16 +41,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.example.eduhub.data.model.User
+import com.example.eduhub.ui.auth.login.LoginUIEvent
 import com.example.eduhub.ui.components.AlertDialogConfirmation
 import com.example.eduhub.ui.modules.list.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
-@Composable
-fun AuthorInfo() {
-    var expanded by remember { mutableStateOf(false) }
-    val openAlertDialog = remember { mutableStateOf(false) }
 
+@Composable
+fun AuthorInfo(
+    id: String,
+    name: String,
+    image: String,
+    handleLogout: () -> Unit,
+    showLogoutDialog: Boolean,
+    onLogoutDialogShowChange: (Boolean) -> Unit,
+    dropdownExpanded: Boolean,
+    onShowDialogChange: (Boolean) -> Unit,
+    onDropdownExpandedChange: (Boolean) -> Unit
+){
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -61,18 +74,28 @@ fun AuthorInfo() {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            AsyncImage(
-                model = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Princeton_seal.svg/1024px-Princeton_seal.svg.png",
-                contentDescription = "Author image",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .width(48.dp)
-                    .height(48.dp)
-            )
+            if (image != "") {
+                AsyncImage(
+                    model = image,
+                    contentDescription = "Author image",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .width(48.dp)
+                        .height(48.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Author image",
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(48.dp)
+                )
+            }
             Text(
-                text = "Princeton University",
+                text = name,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -112,7 +135,7 @@ fun AuthorInfo() {
                             color = Color.Gray,
                             shape = RoundedCornerShape(50)
                         ),
-                    onClick = { expanded = !expanded },
+                    onClick = { onDropdownExpandedChange(!dropdownExpanded) },
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
@@ -121,8 +144,8 @@ fun AuthorInfo() {
                     )
                 }
                 DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    expanded = dropdownExpanded,
+                    onDismissRequest = { onDropdownExpandedChange(false) }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Settings") },
@@ -130,24 +153,24 @@ fun AuthorInfo() {
                     )
                     DropdownMenuItem(
                         text = { Text("Sign Out") },
-                        onClick = { openAlertDialog.value = true }
+                        onClick = {
+                            onDropdownExpandedChange(false)
+                            onLogoutDialogShowChange(true)
+                        }
                     )
                 }
             }
-
-            when {
-                openAlertDialog.value -> {
-                    AlertDialogConfirmation(
-                        onDismissRequest = { openAlertDialog.value = false },
-                        onConfirmation = {
-                            openAlertDialog.value = false
-                            print("Sign out?")
-                        },
-                        dialogTitle = "Sign Out",
-                        dialogText = "Are you sure you want to sign out?",
-                        icon = Icons.Default.Info
-                    )
-                }
+            if (showLogoutDialog) {
+                AlertDialogConfirmation(
+                    onDismissRequest = { onLogoutDialogShowChange(false) },
+                    onConfirmation = {
+                        onShowDialogChange(false)
+                        handleLogout()
+                    },
+                    dialogTitle = "Sign Out",
+                    dialogText = "Are you sure you want to sign out?",
+                    icon = Icons.Default.Info
+                )
             }
         }
     }
@@ -186,8 +209,28 @@ fun BookmarkedModules(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    onNavigateToDetail: () -> Unit
+    onNavigateToDetail: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val user = viewModel.user
+
+    var dropdownExpanded by remember { mutableStateOf(false) }
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is LoginUIEvent.NavigateToLogin -> {
+                    dropdownExpanded = false
+                    showLogoutDialog = false
+                    onNavigateToLogin()
+                }
+                else -> {}
+            }
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -198,7 +241,17 @@ fun ProfileScreen(
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
-                AuthorInfo()
+                AuthorInfo(
+                    id = user?.id ?: "",
+                    name = user?.name ?: "",
+                    image = user?.image ?: "",
+                    dropdownExpanded = dropdownExpanded,
+                    showLogoutDialog = showLogoutDialog,
+                    onDropdownExpandedChange = { dropdownExpanded = it },
+                    onLogoutDialogShowChange = { showLogoutDialog = it },
+                    handleLogout = { viewModel.logout() },
+                    onShowDialogChange = { showLogoutDialog = it }
+                )
             }
             item {
                 BookmarkedModules(
@@ -215,7 +268,8 @@ fun ProfileScreen(
 fun ProfileScreenPreview() {
     EduHubTheme {
         ProfileScreen(
-            onNavigateToDetail = {}
+            onNavigateToDetail = {},
+            onNavigateToLogin = {}
         )
     }
 }

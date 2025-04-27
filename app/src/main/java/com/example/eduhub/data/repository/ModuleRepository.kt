@@ -1,7 +1,7 @@
-package com.example.eduhub.data.repositories
+package com.example.eduhub.data.repository
 
 import com.example.eduhub.data.local.dao.ModuleDao
-import com.example.eduhub.data.models.Module
+import com.example.eduhub.data.local.preferences.UserPreferences
 import com.example.eduhub.ui.modules.list.ModuleItemState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,10 +13,11 @@ interface ModuleRepositoryInterface {
 
 class ModuleRepository(
     private val moduleDao: ModuleDao,
+    private val userPreference: UserPreferences
 ): ModuleRepositoryInterface {
     override suspend fun getAllModules(): List<ModuleItemState> {
         return withContext(Dispatchers.IO) {
-//            val userId = userPreferences.getCurrentUserId()
+//            val userId = userPreference.getCurrentUserId()
             val modules = moduleDao.getAllModules()
 
             modules.map { module ->

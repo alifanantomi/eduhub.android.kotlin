@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,16 +28,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eduhub.R
+import com.example.eduhub.ui.snackbar.AppSnackbarController
 import com.example.eduhub.ui.theme.EduHubTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
+    viewModel: LoginViewModel = hiltViewModel(),
     onNavigateToRegister: () -> Unit,
     onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val background = MaterialTheme.colorScheme.background
     val surface = MaterialTheme.colorScheme.surface
@@ -44,10 +49,24 @@ fun LoginScreen(
 
     val state = viewModel.state
 
-    if (viewModel.navigateToHome) {
-        viewModel.onNavigatedToHome()
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is LoginUIEvent.NavigateToHome -> {
+                    onNavigateToHome()
+                }
+                is LoginUIEvent.ShowSnackbar -> {
+                    AppSnackbarController.controller.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+                is LoginUIEvent.NavigateToLogin -> {
+                    onNavigateToLogin()
+                }
+            }
 
-        onNavigateToHome()
+        }
     }
 
     Box(
@@ -232,7 +251,8 @@ fun LoginPreview() {
     EduHubTheme {
         LoginScreen(
             onNavigateToRegister = {},
-            onNavigateToHome = {}
+            onNavigateToHome = {},
+            onNavigateToLogin = {}
         )
     }
 }

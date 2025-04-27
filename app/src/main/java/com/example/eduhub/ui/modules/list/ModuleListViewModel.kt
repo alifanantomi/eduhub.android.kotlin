@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.eduhub.data.repositories.ModuleRepository
+import com.example.eduhub.data.repository.ModuleRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

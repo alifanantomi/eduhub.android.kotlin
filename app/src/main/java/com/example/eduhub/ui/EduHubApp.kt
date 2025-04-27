@@ -1,9 +1,11 @@
 package com.example.eduhub.ui
 
+import android.app.Application
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -17,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,27 +38,28 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.eduhub.ui.snackbar.AppSnackbarController
-import com.example.eduhub.ui.snackbar.SnackbarController
+import com.example.eduhub.ui.splash.SplashViewModel
+import dagger.hilt.android.HiltAndroidApp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun EduHubApp() {
+fun EduHubApp(viewModel: SplashViewModel) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
     val currentRoute = currentDestination?.route ?: Destinations.MODULE_DETAIL_ROUTE
 
-
     val showBottomNav = when {
+        currentRoute.startsWith("splash") -> false
         currentRoute.startsWith("login") -> false
         currentRoute.startsWith("register") -> false
         currentRoute.startsWith("forgot_password") -> false
@@ -69,6 +71,25 @@ fun EduHubApp() {
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarController = AppSnackbarController.controller
     val snackbarMessage by snackbarController.snackbarMessage
+
+    LaunchedEffect(viewModel.isLoggedIn) {
+        if (viewModel.isLoggedIn == true) {
+            navController.navigate(Destinations.HOME_ROUTE) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+            }
+        } else {
+            navController.navigate(Destinations.LOGIN_ROUTE) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
 
     LaunchedEffect(snackbarMessage) {
         snackbarMessage?.let { message ->
@@ -118,7 +139,7 @@ fun EduHubApp() {
                     navigationIcon = {
                         IconButton(onClick = {  }) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = "Back"
                             )
                         }
@@ -225,5 +246,7 @@ fun EduHubApp() {
 @Preview(showBackground = true, device = Devices.PIXEL_7A, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun EduHubAppPreview() {
-    EduHubApp()
+    EduHubApp(
+        viewModel = TODO()
+    )
 }

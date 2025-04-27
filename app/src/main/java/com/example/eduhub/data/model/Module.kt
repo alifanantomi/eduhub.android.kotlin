@@ -1,4 +1,4 @@
-package com.example.eduhub.data.models
+package com.example.eduhub.data.model
 
 data class Module(
     val id: String,
