@@ -49,7 +49,6 @@ import com.example.eduhub.ui.components.AlertDialogConfirmation
 import com.example.eduhub.ui.modules.list.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
-
 @Composable
 fun AuthorInfo(
     id: String,

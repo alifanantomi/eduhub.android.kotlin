@@ -53,9 +53,7 @@ class LoginViewModel @Inject constructor(
                     state = state.copy(isLoading = false, error = result.exception.message)
                     _uiEvent.emit(LoginUIEvent.ShowSnackbar(result.exception.message.toString()))
                 }
-                is Result.Loading -> {
-
-                }
+                is Result.Loading -> { }
             }
         }
     }

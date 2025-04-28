@@ -3,6 +3,7 @@ import android.util.Log
 import com.example.eduhub.data.api.ApiService
 import com.example.eduhub.data.api.model.request.LoginRequest
 import com.example.eduhub.data.api.model.request.RegisterRequest
+import com.example.eduhub.data.api.model.response.RegisterResponse
 import com.example.eduhub.data.local.preferences.UserPreferences
 import com.example.eduhub.data.mapper.toUser
 import com.example.eduhub.data.model.User
@@ -52,24 +53,32 @@ class AuthRepository @Inject constructor(
     }
 
     override suspend fun register(
+        name: String,
         email: String,
         password: String,
-        name: String
-    ): Result<User> {
+    ): Result<RegisterResponse> {
         return try {
             val response = apiService.register(RegisterRequest(email, password, name))
 
             if (response.isSuccessful) {
                 response.body()?.let { authResponse ->
-                    userPreference.saveAuthToken(authResponse.data.token)
-
-                    val user = authResponse.data.user.toUser()
-                    userPreference.saveUser(user)
-
-                    return Result.Success(user)
+                    return Result.Success(authResponse)
                 } ?: return Result.Error(Exception("Registration failed"))
             } else {
-                Result.Error(Exception("Registration failed"))
+                val errorJson = response.errorBody()?.string()
+
+                val errorMessage = if (errorJson != null) {
+                    try {
+                        val jsonObject = JSONObject(errorJson)
+                        jsonObject.getString("error")
+                    } catch (e: Exception) {
+                        "Unknown error"
+                    }
+                } else {
+                    "Unknown error"
+                }
+
+                Result.Error(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Result.Error(e)

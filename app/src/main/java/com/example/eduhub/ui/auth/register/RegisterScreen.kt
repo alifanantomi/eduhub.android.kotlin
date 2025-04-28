@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,12 +36,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eduhub.R
+import com.example.eduhub.ui.snackbar.AppSnackbarController
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RegisterScreen(
-    viewModel: RegisterViewModel = viewModel(),
+    viewModel: RegisterViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit
 ) {
     val background = MaterialTheme.colorScheme.background
@@ -49,6 +53,22 @@ fun RegisterScreen(
     val onSurface = MaterialTheme.colorScheme.onSurface
 
     val state = viewModel.state
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is RegisterUIEvent.NavigateToLogin -> {
+                    onNavigateToLogin()
+                }
+                is RegisterUIEvent.ShowSnackbar -> {
+                    AppSnackbarController.controller.showSnackbar(
+                        message = event.message
+                    )
+                }
+
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -145,7 +165,7 @@ fun RegisterScreen(
                     )
 
                     Button(
-                        onClick = viewModel::onLoginClick,
+                        onClick = viewModel::onRegisterClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),

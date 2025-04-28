@@ -29,8 +29,12 @@ fun EduHubNavHost(
     ) {
         composable(Destinations.SPLASH_ROUTE) {
             SplashScreen(
-                navigateToHome = { navController.navigate(Destinations.HOME_ROUTE) },
-                navigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) }
+                navigateToHome = { navController.navigate(Destinations.HOME_ROUTE) {
+                    popUpTo(Destinations.SPLASH_ROUTE) { inclusive = true }
+                } },
+                navigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) {
+                    popUpTo(Destinations.SPLASH_ROUTE) { inclusive = true }
+                } }
             )
         }
 

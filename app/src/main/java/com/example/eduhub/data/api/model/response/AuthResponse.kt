@@ -12,6 +12,10 @@ data class AuthResponse(
     val error: String?
 )
 
+data class RegisterResponse(
+    val message: String
+)
+
 data class UserDto(
     val id: String,
     val email: String,
