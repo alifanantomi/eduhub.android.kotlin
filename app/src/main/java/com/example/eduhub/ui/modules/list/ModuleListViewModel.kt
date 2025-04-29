@@ -9,8 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.eduhub.data.repository.ModuleRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import com.example.eduhub.data.model.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ModuleListViewModel(
+@HiltViewModel
+class ModuleListViewModel @Inject constructor(
     private val moduleRepository: ModuleRepository
 ): ViewModel() {
     var state by mutableStateOf(ModuleListState())
@@ -18,22 +22,46 @@ class ModuleListViewModel(
 
     private var fetchJob: Job? = null
 
+    init {
+        loadModules()
+    }
+
     fun loadModules() {
         fetchJob?.cancel()
+        state = state.copy(isLoading = true, error = null)
+
         fetchJob = viewModelScope.launch {
-            try {
-                val moduleItems = moduleRepository.getAllModules()
-                state = state.copy(
-                    isLoading = false,
-                    modules = moduleItems,
-                    filteredModules = moduleItems
-                )
-            } catch (e: Exception) {
-                Log.e("Failed to load modules", e.message.toString())
-                state = state.copy(
-                    isLoading = false,
-                    error = "Failed to load modules: ${e.message}"
-                )
+            when (val result = moduleRepository.getAllModules()) {
+                is Result.Success -> {
+                    val moduleItems = result.data.data.map {
+                        ModuleItemState(
+                            id = it.id,
+                            title = it.title,
+                            summary = it.summary,
+                            image = it.imageUrl.toString(),
+                            createdBy = CreatorState(
+                                id = it.createdBy.id,
+                                name = it.createdBy.name,
+                                image = it.createdBy.image
+                            )
+                        )
+                    }
+
+                    state = state.copy(
+                        isLoading = false,
+                        modules = moduleItems,
+                        filteredModules = moduleItems,
+                        error = null
+                    )
+                }
+                is Result.Error -> {
+                    Log.e("ModuleListViewModel", "Error: ${result.exception.message}")
+                    state = state.copy(
+                        isLoading = false,
+                        error = result.exception.message
+                    )
+                }
+                is Result.Loading -> { }
             }
 
         }

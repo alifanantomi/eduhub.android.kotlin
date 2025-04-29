@@ -2,47 +2,50 @@ package com.example.eduhub.ui.modules.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.eduhub.data.api.model.response.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
 @Composable
 fun ModuleItem(
+    module: ModuleItemState,
     viewModel: ModuleItemViewModel = viewModel(),
-    onNavigateToDetail: () -> Unit,
+    onNavigateToDetail: (String) -> Unit,
 ) {
     if (viewModel.navigateToDetail) {
         viewModel.onNavigatedToDetail()
 
-        onNavigateToDetail()
+        onNavigateToDetail(module.id)
     }
 
     Card(
@@ -61,15 +64,25 @@ fun ModuleItem(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp)
             ) {
-                AsyncImage(
-                    model = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Princeton_seal.svg/1024px-Princeton_seal.svg.png",
-                    contentDescription = "Author image",
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .height(24.dp)
-                )
+                if (!module.createdBy.image.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = module.createdBy.image,
+                        contentDescription = "Author image",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .height(24.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Author image",
+                        modifier = Modifier
+                            .width(24.dp)
+                            .height(24.dp)
+                    )
+                }
                 Text(
-                    text = "Princeton University",
+                    text = module.createdBy.name,
                     style = MaterialTheme.typography.labelSmall
                 )
             }
@@ -79,13 +92,24 @@ fun ModuleItem(
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(
-                        text = "Computer Science: Programming with a Purpose",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = module.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Text(
+                            text = module.summary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
 
                     Text(
                         text = buildAnnotatedString {
@@ -150,6 +174,15 @@ fun ModuleItem(
 fun ModuleItemPreview() {
     EduHubTheme {
         ModuleItem(
+            module = ModuleItemState(
+                title = "Module Title",
+                summary = "Module summary for data for text example, this is one of the example that has two lines of paragraph maybe it works and looks better with long text but truncate on two lines",
+                image = "",
+                createdBy = CreatorState(
+                    name = "Author Name",
+                    image = ""
+                )
+            ),
             onNavigateToDetail = {}
         )
     }

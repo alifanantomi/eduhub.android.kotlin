@@ -21,7 +21,7 @@ data class UserDto(
     val email: String,
     val password: String,
     val name: String,
-//    val role: String,
+    val role: String,
     val image: String?,
     val emailVerified: Boolean,
     val createdAt: String,

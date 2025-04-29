@@ -11,9 +11,9 @@ fun UserDto.toUser(): User {
         name = name,
         image = image ?: "",
         emailVerified = emailVerified,
-//        role = when (role.uppercase()) {
-//            "ADMIN" -> UserRole.ADMIN
-//            else -> UserRole.USER
-//        }
+        role = when (role.uppercase()) {
+            "ADMIN" -> UserRole.ADMIN
+            else -> UserRole.USER
+        }
     )
 }

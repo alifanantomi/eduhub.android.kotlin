@@ -43,10 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.example.eduhub.data.model.User
 import com.example.eduhub.ui.auth.login.LoginUIEvent
 import com.example.eduhub.ui.components.AlertDialogConfirmation
 import com.example.eduhub.ui.modules.list.ModuleItem
+import com.example.eduhub.ui.modules.list.ModuleItemState
 import com.example.eduhub.ui.theme.EduHubTheme
 
 @Composable
@@ -54,6 +54,7 @@ fun AuthorInfo(
     id: String,
     name: String,
     image: String,
+    role: String,
     handleLogout: () -> Unit,
     showLogoutDialog: Boolean,
     onLogoutDialogShowChange: (Boolean) -> Unit,
@@ -116,7 +117,7 @@ fun AuthorInfo(
             }
 
             OutlinedButton(
-                onClick = { Log.d("Test", "") },
+                onClick = {  },
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(vertical = 8.dp),
             ) {
@@ -197,7 +198,12 @@ fun BookmarkedModules(
         ) {
             modules.forEach { _ ->
                 ModuleItem(
-                    onNavigateToDetail = {onNavigateToDetail()}
+                    onNavigateToDetail = { onNavigateToDetail },
+                    module = ModuleItemState(
+                        title = "Module Title",
+                        summary = "Module Summary",
+                        image = ""
+                    )
                 )
             }
         }
@@ -244,6 +250,7 @@ fun ProfileScreen(
                     id = user?.id ?: "",
                     name = user?.name ?: "",
                     image = user?.image ?: "",
+                    role = (user?.role ?: "USER").toString(),
                     dropdownExpanded = dropdownExpanded,
                     showLogoutDialog = showLogoutDialog,
                     onDropdownExpandedChange = { dropdownExpanded = it },

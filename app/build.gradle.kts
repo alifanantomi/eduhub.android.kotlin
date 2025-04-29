@@ -19,7 +19,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_BASE_URL", "\"https://eduhub-api-lovat.vercel.app/api/\"")
+        buildConfigField("String", "API_BASE_URL", "\"http://192.168.0.102:3000/api/\"")
     }
 
     buildTypes {
@@ -29,10 +29,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://eduhub-api-lovat.vercel.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://192.168.0.102:3000/api/\"")
         }
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"https://eduhub-api-lovat.vercel.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://192.168.0.102:3000/api/\"")
         }
     }
     compileOptions {
