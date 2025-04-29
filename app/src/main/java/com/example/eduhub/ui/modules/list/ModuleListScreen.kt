@@ -60,7 +60,7 @@ fun ModuleListScreen(
                         }
                     }
                 }
-                state.error != null -> {
+                state.error != null ->  {
                     item {
                         Text(
                             text = state.error,

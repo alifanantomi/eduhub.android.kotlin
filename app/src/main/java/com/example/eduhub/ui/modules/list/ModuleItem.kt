@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.eduhub.R
 import com.example.eduhub.data.api.model.response.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
@@ -74,7 +76,7 @@ fun ModuleItem(
                     )
                 } else {
                     Icon(
-                        imageVector = Icons.Default.AccountCircle,
+                        painterResource(R.drawable.account_circle_fill),
                         contentDescription = "Author image",
                         modifier = Modifier
                             .width(24.dp)

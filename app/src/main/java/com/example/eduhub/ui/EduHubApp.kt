@@ -1,16 +1,8 @@
 package com.example.eduhub.ui
 
-import android.app.Application
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ButtonDefaults
@@ -38,17 +30,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.eduhub.ui.snackbar.AppSnackbarController
 import com.example.eduhub.ui.splash.SplashViewModel
-import dagger.hilt.android.HiltAndroidApp
+import com.example.eduhub.R
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -139,7 +132,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
                     navigationIcon = {
                         IconButton(onClick = {  }) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                painter = painterResource(R.drawable.arrow_left_long_line),
                                 contentDescription = "Back"
                             )
                         }
@@ -152,7 +145,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
                                 }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.FavoriteBorder,
+                                    painter = painterResource(R.drawable.heart_3_line),
                                     contentDescription = "Bookmark"
                                 )
                             }
@@ -187,7 +180,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
             if (showBottomNav) {
                 NavigationBar {
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                        icon = { Icon(painter = painterResource(R.drawable.home_4_fill), contentDescription = "Home") },
                         label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.HOME_ROUTE,
                         onClick = {
@@ -202,7 +195,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
                     )
 
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Email, contentDescription = "Modules") },
+                        icon = { Icon(painter = painterResource(R.drawable.archive_2_fill), contentDescription = "Module") },
                         label = { Text("Modules", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.MODULE_LIST_ROUTE,
                         onClick = {
@@ -217,7 +210,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
                     )
 
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Profile") },
+                        icon = { Icon(painterResource(R.drawable.account_circle_fill), contentDescription = "Profile") },
                         label = { Text("Profile", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.PROFILE_ROUTE,
                         onClick = {

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -38,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +48,7 @@ import com.example.eduhub.ui.components.AlertDialogConfirmation
 import com.example.eduhub.ui.modules.list.ModuleItem
 import com.example.eduhub.ui.modules.list.ModuleItemState
 import com.example.eduhub.ui.theme.EduHubTheme
+import com.example.eduhub.R
 
 @Composable
 fun AuthorInfo(
@@ -87,7 +88,7 @@ fun AuthorInfo(
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Default.AccountCircle,
+                    painterResource(R.drawable.account_circle_fill),
                     contentDescription = "Author image",
                     modifier = Modifier
                         .width(48.dp)

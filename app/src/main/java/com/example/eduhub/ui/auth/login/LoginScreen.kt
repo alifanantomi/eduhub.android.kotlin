@@ -29,11 +29,9 @@ import androidx.compose.ui.tooling.preview.Devices.PIXEL_7A
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eduhub.R
 import com.example.eduhub.ui.snackbar.AppSnackbarController
 import com.example.eduhub.ui.theme.EduHubTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

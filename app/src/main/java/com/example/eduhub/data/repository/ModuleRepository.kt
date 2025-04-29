@@ -3,17 +3,11 @@ package com.example.eduhub.data.repository
 import com.example.eduhub.data.api.ApiService
 import com.example.eduhub.data.api.model.response.ModuleDetail
 import com.example.eduhub.data.api.model.response.ModuleResponse
-import com.example.eduhub.data.local.dao.ModuleDao
-import com.example.eduhub.data.local.preferences.UserPreferences
 import com.example.eduhub.data.model.Result
-import com.example.eduhub.ui.modules.list.ModuleItemState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ModuleRepository @Inject constructor(
-    private val apiService: ApiService,
-    private val userPreference: UserPreferences,
+    private val apiService: ApiService
 ) : ModuleRepositoryInterface {
 
     override suspend fun getAllModules(): Result<ModuleResponse> {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,9 +32,15 @@ import com.example.eduhub.ui.modules.list.ModuleItemState
 import com.example.eduhub.ui.modules.list.ModuleListViewModel
 import com.example.eduhub.ui.theme.EduHubTheme
 import com.example.eduhub.ui.topics.TopicItem
+import com.example.eduhub.ui.topics.TopicItemState
+import com.example.eduhub.ui.topics.TopicViewModel
 
 @Composable
-fun TopicList(topicCount: Int = 10) {
+fun TopicList(
+    viewModel: TopicViewModel = hiltViewModel()
+) {
+    val state = viewModel.state
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -50,8 +57,51 @@ fun TopicList(topicCount: Int = 10) {
             contentPadding = PaddingValues(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(topicCount) { topic ->
-                TopicItem()
+            when {
+                state.isLoading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .width(24.dp)
+                                .height(24.dp)
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+
+                state.error != null -> {
+                    item {
+                        Text(
+                            text = state.error,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                    }
+                }
+                state.filteredTopics.isEmpty() -> {
+                    item {
+                        Text(
+                            text = "No topics found",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                    }
+                }
+                else -> {
+                    items(state.filteredTopics) {
+                        TopicItem(
+                            topic = TopicItemState(
+                                id = it.id,
+                                name = it.name,
+                                icon = it.icon
+                            )
+                        )
+                    }
+                }
             }
         }
     }
