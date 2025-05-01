@@ -1,6 +1,7 @@
 package com.example.eduhub.ui.modules.list
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +91,9 @@ fun ModuleListScreen(
                                 summary = module.summary,
                                 createdBy = module.createdBy
                             ),
-                            onNavigateToDetail = { onNavigateToDetail(module.id) }
+                            onNavigateToDetail = {
+                                onNavigateToDetail(module.id)
+                            }
                         )
                     }
                 }

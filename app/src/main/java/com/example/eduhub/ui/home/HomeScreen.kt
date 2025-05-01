@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -114,6 +115,7 @@ fun ModuleList(
     modules: List<ModuleItemState>,
     onNavigateToDetail: (String) -> Unit
 ) {
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -177,7 +179,7 @@ fun ModuleList(
 @Composable
 fun HomeScreen(
     viewModel: ModuleListViewModel = hiltViewModel(),
-    onNavigateToDetail: () -> Unit
+    onNavigateToDetail: (String) -> Unit
 ) {
     val state = viewModel.state
 
@@ -213,7 +215,7 @@ fun HomeScreen(
                     isLoading = state.isLoading,
                     error = state.error,
                     modules = state.filteredModules,
-                    onNavigateToDetail = {onNavigateToDetail()}
+                    onNavigateToDetail = onNavigateToDetail
                 )
             }
         }

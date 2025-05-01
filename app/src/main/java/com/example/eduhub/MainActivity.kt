@@ -8,15 +8,20 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.eduhub.data.repository.AuthRepository
 import com.example.eduhub.ui.EduHubApp
 import com.example.eduhub.ui.splash.SplashViewModel
 import com.example.eduhub.ui.theme.EduHubTheme
 import com.example.eduhub.ui.theme.PreviewWithTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: SplashViewModel by viewModels()
+
+    @Inject
+    lateinit var authRepository: AuthRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -31,7 +36,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             EduHubTheme {
                 EduHubApp(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    authRepository = authRepository
                 )
             }
         }
@@ -45,7 +51,8 @@ fun AppPreview() {
         EduHubApp(
             viewModel = SplashViewModel(
                 userPreferences = TODO()
-            )
+            ),
+            authRepository = TODO()
         )
     }
 }

@@ -38,25 +38,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.eduhub.ui.snackbar.AppSnackbarController
 import com.example.eduhub.ui.splash.SplashViewModel
 import com.example.eduhub.R
+import com.example.eduhub.data.api.ApiService
+import com.example.eduhub.data.local.preferences.UserPreferences
+import com.example.eduhub.data.repository.AuthRepository
+import com.example.eduhub.ui.modules.detail.ModuleDetailViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun EduHubApp(viewModel: SplashViewModel) {
+fun EduHubApp(
+    viewModel: SplashViewModel,
+    authRepository: AuthRepository,
+    moduleViewModel: ModuleDetailViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
     val currentRoute = currentDestination?.route ?: Destinations.MODULE_DETAIL_ROUTE
 
     val showBottomNav = when {
-        currentRoute.startsWith("splash") -> false
-        currentRoute.startsWith("login") -> false
-        currentRoute.startsWith("register") -> false
-        currentRoute.startsWith("forgot_password") -> false
-        currentRoute.startsWith("module/{module}") -> false
+        currentRoute.startsWith(Destinations.SPLASH_ROUTE) -> false
+        currentRoute.startsWith(Destinations.LOGIN_ROUTE) -> false
+        currentRoute.startsWith(Destinations.REGISTER_ROUTER) -> false
+        currentRoute.startsWith(Destinations.FORGOT_PASSWORD_ROUTE) -> false
+        currentRoute.startsWith(Destinations.MODULE_DETAIL_ROUTE) -> false
         currentRoute.startsWith("admin/") -> false
         else -> true
     }
@@ -101,11 +110,12 @@ fun EduHubApp(viewModel: SplashViewModel) {
     }
 
     val showTopBar = when {
-        currentRoute.startsWith("module/{module}") -> true
+        currentRoute.startsWith(Destinations.MODULE_DETAIL_ROUTE) -> true
         else -> false
     }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    val detailModuleState = moduleViewModel.state
     Scaffold(
         topBar = {
             val collapsedFraction = scrollBehavior.state.collapsedFraction
@@ -121,7 +131,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
                     ),
                     title = {
                         Text(
-                            text = "Computer Science: Programming with a Purpose",
+                            text = if (detailModuleState.isLoading) "Loading..." else detailModuleState.module.title,
                             style = MaterialTheme.typography.headlineSmall.copy(
                                 fontSize = dynamicFontSize
                             ),
@@ -230,7 +240,8 @@ fun EduHubApp(viewModel: SplashViewModel) {
         EduHubNavHost(
             navController = navController,
             modifier = Modifier.padding(it),
-            scrollBehavior = if (showTopBar) scrollBehavior else null
+            scrollBehavior = if (showTopBar) scrollBehavior else null,
+            authRepository = authRepository
         )
     }
 }
@@ -240,6 +251,7 @@ fun EduHubApp(viewModel: SplashViewModel) {
 @Composable
 fun EduHubAppPreview() {
     EduHubApp(
-        viewModel = TODO()
+        viewModel = TODO(),
+        authRepository = TODO()
     )
 }

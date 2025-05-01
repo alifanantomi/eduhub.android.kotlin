@@ -1,5 +1,6 @@
 package com.example.eduhub.ui.topics
 
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -7,8 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,14 +20,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eduhub.R
 
 @Composable
 fun TopicItem(
     topic: TopicItemState,
-    viewModel: TopicViewModel = viewModel(),
 ) {
     Card(
         onClick = {},
@@ -44,13 +41,14 @@ fun TopicItem(
             modifier = Modifier
                 .padding(vertical = 12.dp, horizontal = 8.dp)
         ) {
-            if (!topic.icon.isNullOrEmpty()) {
+            if (topic.icon.isNotEmpty()) {
                 AsyncImage(
                     model = topic.icon,
                     contentDescription = "Icon image",
                     modifier = Modifier
-                        .padding(8.dp)
-                        .height(24.dp)
+                        .width(24.dp)
+                        .height(24.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                 )
             } else {
                 Icon(

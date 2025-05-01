@@ -16,17 +16,10 @@ data class ModuleItem(
     val updatedAt: String,
     val createdBy: Creator
 )
-
-data class ModuleResponse(
-    val data: List<ModuleItem>,
-    val message: String,
-    val error: String?
-)
-
 data class AuthorResponse(
     val id: String,
     val name: String,
-    val imageUrl: String?
+    val image: String?
 )
 
 data class ModuleDetail(
@@ -35,5 +28,17 @@ data class ModuleDetail(
     val imageUrl: String?,
     val summary: String,
     val content: String,
-    val author: AuthorResponse,
+    val createdBy: AuthorResponse,
+)
+
+data class ModuleResponse(
+    val data: List<ModuleItem>,
+    val message: String,
+    val error: String?
+)
+
+data class DetailModuleResponse(
+    val data: ModuleDetail,
+    val message: String,
+    val error: String?
 )

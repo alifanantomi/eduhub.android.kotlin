@@ -9,7 +9,7 @@ object Destinations {
 
     const val HOME_ROUTE = "home"
     const val MODULE_LIST_ROUTE = "modules"
-    const val MODULE_DETAIL_ROUTE = "module/{module}"
+    const val MODULE_DETAIL_ROUTE = "module/{moduleId}"
     const val BOOKMARKS_ROUTE = "bookmarks"
     const val PROFILE_ROUTE = "profile"
 

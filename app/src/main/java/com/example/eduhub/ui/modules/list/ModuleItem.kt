@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,24 +30,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.eduhub.R
-import com.example.eduhub.data.api.model.response.ModuleItem
 import com.example.eduhub.ui.theme.EduHubTheme
 
 @Composable
 fun ModuleItem(
     module: ModuleItemState,
-    viewModel: ModuleItemViewModel = viewModel(),
-    onNavigateToDetail: (String) -> Unit,
+    onNavigateToDetail: () -> Unit,
 ) {
-    if (viewModel.navigateToDetail) {
-        viewModel.onNavigatedToDetail()
-
-        onNavigateToDetail(module.id)
-    }
-
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
         colors = CardDefaults.cardColors(
@@ -154,7 +143,7 @@ fun ModuleItem(
                 )
 
                 Button(
-                    onClick = viewModel::onDetailClick,
+                    onClick = onNavigateToDetail,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(

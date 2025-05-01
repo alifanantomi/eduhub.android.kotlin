@@ -3,10 +3,13 @@ package com.example.eduhub.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.eduhub.data.local.preferences.UserPreferences
+import com.example.eduhub.data.repository.AuthRepository
 import com.example.eduhub.ui.auth.login.LoginScreen
 import com.example.eduhub.ui.auth.register.RegisterScreen
 import com.example.eduhub.ui.home.HomeScreen
@@ -14,17 +17,23 @@ import com.example.eduhub.ui.modules.detail.ModuleDetailScreen
 import com.example.eduhub.ui.modules.list.ModuleListScreen
 import com.example.eduhub.ui.profile.ProfileScreen
 import com.example.eduhub.ui.splash.SplashScreen
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EduHubNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    authRepository: AuthRepository
 ) {
+    val isLoggedIn by authRepository.isLoggedInFlow.collectAsState(initial = false)
+
     NavHost(
         navController = navController,
-        startDestination = Destinations.SPLASH_ROUTE,
+        startDestination = if (isLoggedIn) Destinations.HOME_ROUTE else Destinations.SPLASH_ROUTE,
         modifier = modifier
     ) {
         composable(Destinations.SPLASH_ROUTE) {
@@ -58,13 +67,25 @@ fun EduHubNavHost(
 
         composable(Destinations.HOME_ROUTE) {
             HomeScreen(
-                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) }
+                onNavigateToDetail = { moduleId -> navController.navigate("module/$moduleId") }
             )
         }
 
         composable(Destinations.MODULE_LIST_ROUTE) {
             ModuleListScreen(
-                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) }
+                onNavigateToDetail = { moduleId -> navController.navigate("module/$moduleId") }
+            )
+        }
+
+        composable(
+            route = Destinations.MODULE_DETAIL_ROUTE,
+            arguments = listOf(navArgument("moduleId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val moduleId = backStackEntry.arguments?.getString("moduleId") ?: ""
+
+            ModuleDetailScreen(
+                moduleId = moduleId,
+                scrollBehavior = scrollBehavior
             )
         }
 
@@ -72,14 +93,12 @@ fun EduHubNavHost(
             ProfileScreen(
                 onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) },
                 onNavigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) {
-                    popUpTo(Destinations.PROFILE_ROUTE) { inclusive = true }
-                } }
-            )
-        }
-
-        composable(Destinations.MODULE_DETAIL_ROUTE) {
-            ModuleDetailScreen(
-                scrollBehavior = scrollBehavior
+                        popUpTo(Destinations.PROFILE_ROUTE) { inclusive = true }
+                        popUpTo(Destinations.HOME_ROUTE) { inclusive = true }
+                        popUpTo(Destinations.MODULE_LIST_ROUTE) { inclusive = true }
+                        popUpTo(Destinations.MODULE_DETAIL_ROUTE) { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -1,7 +1,7 @@
 package com.example.eduhub.data.repository
 
 import com.example.eduhub.data.api.ApiService
-import com.example.eduhub.data.api.model.response.ModuleDetail
+import com.example.eduhub.data.api.model.response.DetailModuleResponse
 import com.example.eduhub.data.api.model.response.ModuleResponse
 import com.example.eduhub.data.model.Result
 import javax.inject.Inject
@@ -26,16 +26,16 @@ class ModuleRepository @Inject constructor(
         }
     }
 
-    override suspend fun getModuleById(id: String): Result<ModuleDetail> {
+    override suspend fun getModuleById(id: String): Result<DetailModuleResponse> {
         return try {
             val response = apiService.getDetailModule(id)
 
             if (response.isSuccessful) {
                 response.body()?.let {
                     Result.Success(it)
-                } ?: Result.Error(Exception("Failed to fetch module"))
+                } ?: Result.Error(Exception("Failed to fetch module detail"))
             } else {
-                Result.Error(Exception("Failed to fetch module"))
+                Result.Error(Exception("Failed to fetch module detail"))
             }
         } catch (e: Exception) {
             Result.Error(e)

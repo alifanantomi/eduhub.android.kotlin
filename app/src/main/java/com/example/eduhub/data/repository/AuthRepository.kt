@@ -8,7 +8,9 @@ import com.example.eduhub.data.local.preferences.UserPreferences
 import com.example.eduhub.data.mapper.toUser
 import com.example.eduhub.data.model.User
 import com.example.eduhub.data.model.Result
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import javax.inject.Inject
@@ -17,6 +19,9 @@ class AuthRepository @Inject constructor(
     private val apiService: ApiService,
     private val userPreference: UserPreferences
 ) : AuthRepositoryInterface {
+
+    val isLoggedInFlow: Flow<Boolean> = userPreference.authTokenFlow
+        .map { token -> !token.isNullOrEmpty() }
 
     override suspend fun login(email: String, password: String): Result<User> {
         return try {
