@@ -4,7 +4,7 @@ import com.example.eduhub.ui.modules.list.CreatorState
 
 data class ModuleState(
     val id: String = "",
-    val title: String = "",
+    val title: String = "KIMBEK",
     val image: String = "",
     val summary: String = "",
     val content: String = "",

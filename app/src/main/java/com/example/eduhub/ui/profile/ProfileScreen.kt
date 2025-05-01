@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -49,6 +50,7 @@ import com.example.eduhub.ui.modules.list.ModuleItem
 import com.example.eduhub.ui.modules.list.ModuleItemState
 import com.example.eduhub.ui.theme.EduHubTheme
 import com.example.eduhub.R
+import com.example.eduhub.ui.bookmark.BookmarkViewModel
 
 @Composable
 fun AuthorInfo(
@@ -179,8 +181,10 @@ fun AuthorInfo(
 
 @Composable
 fun BookmarkedModules(
-    modules: List<String> = List(4) { "Module ${it + 1}" },
-    onNavigateToDetail: () -> Unit
+    modules: List<ModuleItemState>,
+    isLoading: Boolean,
+    error: String?,
+    onNavigateToDetail: (String) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -197,27 +201,49 @@ fun BookmarkedModules(
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            modules.forEach { _ ->
-                ModuleItem(
-                    onNavigateToDetail = { onNavigateToDetail },
-                    module = ModuleItemState(
-                        title = "Module Title",
-                        summary = "Module Summary",
-                        image = ""
+            when {
+                isLoading -> {
+                    CircularProgressIndicator()
+                }
+                error != null -> {
+                    Text(
+                        text = error,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.error
                     )
-                )
+                }
+                modules.isEmpty() -> {
+                    Text(
+                        text = "No bookmarked modules",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                else -> {
+                    modules.forEach { module ->
+                        ModuleItem(
+                            onNavigateToDetail = { onNavigateToDetail(module.id) },
+                            module = ModuleItemState(
+                                title = module.title,
+                                summary = module.summary,
+                                image = module.image,
+                                createdBy = module.createdBy
+                            )
+                        )
+                    }
+                }
             }
         }
-
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    onNavigateToDetail: () -> Unit,
+    onNavigateToDetail: (String) -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    bookmarkViewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val user = viewModel.user
 
@@ -236,6 +262,8 @@ fun ProfileScreen(
             }
         }
     }
+
+    val bookmarkState = bookmarkViewModel.state
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -262,7 +290,10 @@ fun ProfileScreen(
             }
             item {
                 BookmarkedModules(
-                    onNavigateToDetail = {onNavigateToDetail}
+                    onNavigateToDetail = onNavigateToDetail,
+                    modules = bookmarkState.bookmarks,
+                    isLoading = bookmarkState.isLoading,
+                    error = bookmarkState.error
                 )
             }
         }

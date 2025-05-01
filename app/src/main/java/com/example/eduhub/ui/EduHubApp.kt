@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,6 +47,7 @@ import com.example.eduhub.R
 import com.example.eduhub.data.api.ApiService
 import com.example.eduhub.data.local.preferences.UserPreferences
 import com.example.eduhub.data.repository.AuthRepository
+import com.example.eduhub.ui.bookmark.BookmarkViewModel
 import com.example.eduhub.ui.modules.detail.ModuleDetailViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -53,12 +55,13 @@ import com.example.eduhub.ui.modules.detail.ModuleDetailViewModel
 fun EduHubApp(
     viewModel: SplashViewModel,
     authRepository: AuthRepository,
-    moduleViewModel: ModuleDetailViewModel = hiltViewModel()
+    moduleViewModel: ModuleDetailViewModel = hiltViewModel(),
+    bookmarkViewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
-    val currentRoute = currentDestination?.route ?: Destinations.MODULE_DETAIL_ROUTE
+    val currentRoute = currentDestination?.route ?: Destinations.LOGIN_ROUTE
 
     val showBottomNav = when {
         currentRoute.startsWith(Destinations.SPLASH_ROUTE) -> false
@@ -73,6 +76,12 @@ fun EduHubApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarController = AppSnackbarController.controller
     val snackbarMessage by snackbarController.snackbarMessage
+
+    if (currentRoute.startsWith(Destinations.MODULE_DETAIL_ROUTE)) {
+        LaunchedEffect(true) {
+
+        }
+    }
 
     LaunchedEffect(viewModel.isLoggedIn) {
         if (viewModel.isLoggedIn == true) {
@@ -116,6 +125,7 @@ fun EduHubApp(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val detailModuleState = moduleViewModel.state
+
     Scaffold(
         topBar = {
             val collapsedFraction = scrollBehavior.state.collapsedFraction
@@ -140,7 +150,7 @@ fun EduHubApp(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {  }) {
+                        IconButton(onClick = { navController.popBackStack()  }) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_left_long_line),
                                 contentDescription = "Back"
@@ -148,7 +158,7 @@ fun EduHubApp(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {  }) {
+                        IconButton(onClick = { bookmarkViewModel.createBookmark(detailModuleState.module.id) }) {
                             BadgedBox(
                                 badge = {
                                     Badge()
@@ -194,13 +204,7 @@ fun EduHubApp(
                         label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.HOME_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.HOME_ROUTE) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            navController.navigate(Destinations.HOME_ROUTE)
                         }
                     )
 
@@ -209,13 +213,7 @@ fun EduHubApp(
                         label = { Text("Modules", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.MODULE_LIST_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.MODULE_LIST_ROUTE) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            navController.navigate(Destinations.MODULE_LIST_ROUTE)
                         }
                     )
 
@@ -224,13 +222,7 @@ fun EduHubApp(
                         label = { Text("Profile", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.PROFILE_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.PROFILE_ROUTE) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            navController.navigate(Destinations.PROFILE_ROUTE)
                         }
                     )
                 }
@@ -241,7 +233,8 @@ fun EduHubApp(
             navController = navController,
             modifier = Modifier.padding(it),
             scrollBehavior = if (showTopBar) scrollBehavior else null,
-            authRepository = authRepository
+            authRepository = authRepository,
+            moduleDetailViewModel = moduleViewModel
         )
     }
 }

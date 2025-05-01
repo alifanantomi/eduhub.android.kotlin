@@ -20,6 +20,7 @@ import com.example.eduhub.ui.splash.SplashScreen
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.eduhub.ui.modules.detail.ModuleDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +28,8 @@ fun EduHubNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    authRepository: AuthRepository
+    authRepository: AuthRepository,
+    moduleDetailViewModel: ModuleDetailViewModel
 ) {
     val isLoggedIn by authRepository.isLoggedInFlow.collectAsState(initial = false)
 
@@ -85,13 +87,14 @@ fun EduHubNavHost(
 
             ModuleDetailScreen(
                 moduleId = moduleId,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                viewModel = moduleDetailViewModel
             )
         }
 
         composable(Destinations.PROFILE_ROUTE) {
             ProfileScreen(
-                onNavigateToDetail = { navController.navigate(Destinations.MODULE_DETAIL_ROUTE) },
+                onNavigateToDetail = { moduleId -> navController.navigate("module/$moduleId") },
                 onNavigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) {
                         popUpTo(Destinations.PROFILE_ROUTE) { inclusive = true }
                         popUpTo(Destinations.HOME_ROUTE) { inclusive = true }

@@ -26,6 +26,7 @@ class ModuleListViewModel @Inject constructor(
         loadModules()
     }
 
+
     fun loadModules() {
         fetchJob?.cancel()
         state = state.copy(isLoading = true, error = null)

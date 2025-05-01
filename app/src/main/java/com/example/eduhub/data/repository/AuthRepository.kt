@@ -21,7 +21,7 @@ class AuthRepository @Inject constructor(
 ) : AuthRepositoryInterface {
 
     val isLoggedInFlow: Flow<Boolean> = userPreference.authTokenFlow
-        .map { token -> !token.isNullOrEmpty() }
+        .map { token -> token.isNotEmpty() }
 
     override suspend fun login(email: String, password: String): Result<User> {
         return try {

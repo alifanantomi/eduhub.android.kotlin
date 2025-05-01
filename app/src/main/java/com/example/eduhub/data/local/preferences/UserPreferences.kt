@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,7 +55,9 @@ UserPreferences @Inject constructor(
     }
 
     fun getAuthTokenSync(): String {
-        return cachedAuthToken ?: ""
+        return runBlocking {
+            getAuthToken()
+        }
     }
 
     suspend fun getAuthToken(): String {

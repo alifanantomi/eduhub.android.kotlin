@@ -1,8 +1,10 @@
 package com.example.eduhub.data.api
 
+import com.example.eduhub.data.api.model.request.BookmarkRequest
 import com.example.eduhub.data.api.model.request.LoginRequest
 import com.example.eduhub.data.api.model.request.RegisterRequest
 import com.example.eduhub.data.api.model.response.AuthResponse
+import com.example.eduhub.data.api.model.response.BookmarkResponse
 import com.example.eduhub.data.api.model.response.DetailModuleResponse
 import com.example.eduhub.data.api.model.response.ModuleResponse
 import com.example.eduhub.data.api.model.response.RegisterResponse
@@ -25,4 +27,10 @@ interface ApiService {
 
     @GET("topics")
     suspend fun getTopics(): Response<TopicResponse>
+
+    @GET("bookmarks")
+    suspend fun getBookmarks(): Response<BookmarkResponse>
+
+    @POST("bookmarks/{id}")
+    suspend fun createBookmark(@Body bookmarkRequest: BookmarkRequest): Response<BookmarkResponse>
 }
