@@ -12,6 +12,7 @@ data class ModuleItem(
     val imageUrl: String?,
     val summary: String,
     val content: String,
+    val readTime: Number,
     val createdAt: String,
     val updatedAt: String,
     val createdBy: Creator

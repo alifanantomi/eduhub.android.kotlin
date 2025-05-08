@@ -48,6 +48,7 @@ class BookmarkViewModel @Inject constructor(
                             title = it.module.title,
                             summary = it.module.summary,
                             image = it.module.imageUrl.toString(),
+                            readTime = it.module.readTime,
                             createdBy = CreatorState(
                                 id = it.module.createdBy.id,
                                 name = it.module.createdBy.name,

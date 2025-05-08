@@ -104,20 +104,22 @@ fun ModuleItem(
 
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(
-                                SpanStyle(
-                                    fontWeight = FontWeight.Medium
-                                )
-                            ) {
-                                append("1 min")
-                            }
-                            withStyle(
-                                SpanStyle(
-                                    fontWeight = FontWeight.Normal,
-                                    letterSpacing = 6.sp
-                                )
-                            ) {
-                                append(" • ")
+                            if (module.readTime.toInt() > 0) {
+                                withStyle(
+                                    SpanStyle(
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                ) {
+                                    append("${module.readTime} min")
+                                }
+                                withStyle(
+                                    SpanStyle(
+                                        fontWeight = FontWeight.Normal,
+                                        letterSpacing = 6.sp
+                                    )
+                                ) {
+                                    append(" • ")
+                                }
                             }
                             withStyle(
                                 SpanStyle(
@@ -133,14 +135,14 @@ fun ModuleItem(
                     )
                 }
 
-                LinearProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    progress = { (2.toFloat() / 100) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                )
+//                LinearProgressIndicator(
+//                    color = MaterialTheme.colorScheme.primary,
+//                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+//                    progress = { (2.toFloat() / 100) },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(6.dp)
+//                )
 
                 Button(
                     onClick = onNavigateToDetail,
@@ -169,9 +171,10 @@ fun ModuleItemPreview() {
                 title = "Module Title",
                 summary = "Module summary for data for text example, this is one of the example that has two lines of paragraph maybe it works and looks better with long text but truncate on two lines",
                 image = "",
+                readTime = 0,
                 createdBy = CreatorState(
                     name = "Author Name",
-                    image = ""
+                    image = "",
                 )
             ),
             onNavigateToDetail = {}

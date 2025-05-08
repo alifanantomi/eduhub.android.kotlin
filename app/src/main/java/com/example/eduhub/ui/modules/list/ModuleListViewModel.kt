@@ -40,6 +40,7 @@ class ModuleListViewModel @Inject constructor(
                             title = it.title,
                             summary = it.summary,
                             image = it.imageUrl.toString(),
+                            readTime = it.readTime,
                             createdBy = CreatorState(
                                 id = it.createdBy.id,
                                 name = it.createdBy.name,

@@ -229,7 +229,8 @@ fun BookmarkedModules(
                                 title = module.title,
                                 summary = module.summary,
                                 image = module.image,
-                                createdBy = module.createdBy
+                                createdBy = module.createdBy,
+                                readTime = module.readTime
                             )
                         )
                     }

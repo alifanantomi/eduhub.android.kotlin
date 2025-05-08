@@ -89,7 +89,8 @@ fun ModuleListScreen(
                                 id = module.id,
                                 title = module.title,
                                 summary = module.summary,
-                                createdBy = module.createdBy
+                                createdBy = module.createdBy,
+                                readTime = module.readTime
                             ),
                             onNavigateToDetail = {
                                 onNavigateToDetail(module.id)

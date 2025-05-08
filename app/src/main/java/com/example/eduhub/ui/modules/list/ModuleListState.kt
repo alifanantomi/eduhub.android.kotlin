@@ -6,6 +6,7 @@ data class ModuleItemState(
     val image: String = "",
     val summary: String = "",
     val content: String = "",
+    val readTime: Number,
     val createdBy: CreatorState = CreatorState()
 )
 

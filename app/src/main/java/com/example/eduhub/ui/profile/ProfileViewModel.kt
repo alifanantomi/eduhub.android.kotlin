@@ -2,7 +2,6 @@ package com.example.eduhub.ui.profile
 
 import android.content.Context
 import android.net.Uri
-import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +20,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
-import kotlin.io.path.createTempFile
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
