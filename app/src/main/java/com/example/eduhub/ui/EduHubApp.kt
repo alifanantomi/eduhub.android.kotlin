@@ -69,6 +69,7 @@ fun EduHubApp(
         currentRoute.startsWith(Destinations.REGISTER_ROUTER) -> false
         currentRoute.startsWith(Destinations.FORGOT_PASSWORD_ROUTE) -> false
         currentRoute.startsWith(Destinations.MODULE_DETAIL_ROUTE) -> false
+        currentRoute.startsWith(Destinations.EDIT_PROFILE_ROUTE) -> false
         currentRoute.startsWith("admin/") -> false
         else -> true
     }
@@ -76,12 +77,6 @@ fun EduHubApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarController = AppSnackbarController.controller
     val snackbarMessage by snackbarController.snackbarMessage
-
-    if (currentRoute.startsWith(Destinations.MODULE_DETAIL_ROUTE)) {
-        LaunchedEffect(true) {
-
-        }
-    }
 
     LaunchedEffect(viewModel.isLoggedIn) {
         if (viewModel.isLoggedIn == true) {
@@ -150,7 +145,7 @@ fun EduHubApp(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack()  }) {
+                        IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_left_long_line),
                                 contentDescription = "Back"
@@ -204,7 +199,8 @@ fun EduHubApp(
                         label = { Text("Home", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.HOME_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.HOME_ROUTE)
+                            if (currentRoute != Destinations.HOME_ROUTE) { navController.navigate(Destinations.HOME_ROUTE) }
+
                         }
                     )
 
@@ -213,7 +209,7 @@ fun EduHubApp(
                         label = { Text("Modules", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.MODULE_LIST_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.MODULE_LIST_ROUTE)
+                            if (currentRoute != Destinations.MODULE_LIST_ROUTE) { navController.navigate(Destinations.MODULE_LIST_ROUTE) }
                         }
                     )
 
@@ -222,7 +218,7 @@ fun EduHubApp(
                         label = { Text("Profile", style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == Destinations.PROFILE_ROUTE,
                         onClick = {
-                            navController.navigate(Destinations.PROFILE_ROUTE)
+                            if (currentRoute != Destinations.PROFILE_ROUTE) { navController.navigate(Destinations.PROFILE_ROUTE) }
                         }
                     )
                 }

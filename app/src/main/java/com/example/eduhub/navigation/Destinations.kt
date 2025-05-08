@@ -12,6 +12,7 @@ object Destinations {
     const val MODULE_DETAIL_ROUTE = "module/{moduleId}"
     const val BOOKMARKS_ROUTE = "bookmarks"
     const val PROFILE_ROUTE = "profile"
+    const val EDIT_PROFILE_ROUTE = "edit_profile/{userId}"
 
     fun moduleDetailRoute(moduleId: String): String {
         return "module/${moduleId}"

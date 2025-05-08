@@ -142,6 +142,15 @@ fun ModuleList(
                     }
                 }
 
+                error != null -> {
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+                }
+
                 modules.isEmpty() -> {
                     Box(modifier = Modifier
                         .fillMaxWidth()

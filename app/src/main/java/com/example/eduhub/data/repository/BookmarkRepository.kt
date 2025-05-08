@@ -40,9 +40,9 @@ class BookmarkRepository @Inject constructor(
         }
     }
 
-    override suspend fun createBookmark(id: String): Result<BookmarkResponse> {
+    override suspend fun createBookmark(moduleId: String): Result<BookmarkResponse> {
         return try {
-            val response = apiService.createBookmark(BookmarkRequest(id))
+            val response = apiService.createBookmark(BookmarkRequest(moduleId))
 
             if (response.isSuccessful) {
                 response.body()?.let {

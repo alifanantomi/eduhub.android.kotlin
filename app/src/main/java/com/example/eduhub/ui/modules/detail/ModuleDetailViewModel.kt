@@ -1,6 +1,5 @@
 package com.example.eduhub.ui.modules.detail
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,8 +10,6 @@ import com.example.eduhub.data.repository.ModuleRepository
 import com.example.eduhub.ui.modules.list.CreatorState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,15 +50,18 @@ class ModuleDetailViewModel @Inject constructor(
                         error = null
                     )
                 }
+
                 is Result.Error -> {
                     state = state.copy(
                         isLoading = false,
                         error = result.exception.message
                     )
                 }
+
                 is Result.Loading -> {
                     // Handle loading
                 }
+
             }
         }
     }

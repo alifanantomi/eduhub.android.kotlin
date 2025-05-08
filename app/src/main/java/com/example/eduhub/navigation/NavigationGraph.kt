@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.eduhub.ui.modules.detail.ModuleDetailViewModel
+import com.example.eduhub.ui.profile.EditProfileScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,7 +93,7 @@ fun EduHubNavHost(
             )
         }
 
-        composable(Destinations.PROFILE_ROUTE) {
+        composable(route = Destinations.PROFILE_ROUTE) {
             ProfileScreen(
                 onNavigateToDetail = { moduleId -> navController.navigate("module/$moduleId") },
                 onNavigateToLogin = { navController.navigate(Destinations.LOGIN_ROUTE) {
@@ -101,7 +102,18 @@ fun EduHubNavHost(
                         popUpTo(Destinations.MODULE_LIST_ROUTE) { inclusive = true }
                         popUpTo(Destinations.MODULE_DETAIL_ROUTE) { inclusive = true }
                     }
-                }
+                },
+                onNavigateToEditProfile = { userId -> navController.navigate("edit_profile/$userId") }
+            )
+        }
+
+        composable(
+            route = Destinations.EDIT_PROFILE_ROUTE,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) {
+            EditProfileScreen(
+                onBackRoute = { navController.popBackStack() },
+                onNavigateToProfile = { navController.navigate(Destinations.PROFILE_ROUTE) }
             )
         }
     }

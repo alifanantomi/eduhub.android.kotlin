@@ -63,8 +63,10 @@ fun AuthorInfo(
     onLogoutDialogShowChange: (Boolean) -> Unit,
     dropdownExpanded: Boolean,
     onShowDialogChange: (Boolean) -> Unit,
-    onDropdownExpandedChange: (Boolean) -> Unit
+    onDropdownExpandedChange: (Boolean) -> Unit,
+    onNavigateToEditProfile: (String) -> Unit
 ){
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -109,7 +111,7 @@ fun AuthorInfo(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedButton(
-                onClick = { Log.d("Test", "") },
+                onClick = { onNavigateToEditProfile(id) },
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(vertical = 8.dp),
             ) {
@@ -184,7 +186,7 @@ fun BookmarkedModules(
     modules: List<ModuleItemState>,
     isLoading: Boolean,
     error: String?,
-    onNavigateToDetail: (String) -> Unit
+    onNavigateToDetail: (String) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -242,6 +244,7 @@ fun BookmarkedModules(
 fun ProfileScreen(
     onNavigateToDetail: (String) -> Unit,
     onNavigateToLogin: () -> Unit,
+    onNavigateToEditProfile: (String) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
     bookmarkViewModel: BookmarkViewModel = hiltViewModel()
 ) {
@@ -253,9 +256,7 @@ fun ProfileScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is LoginUIEvent.NavigateToLogin -> {
-                    dropdownExpanded = false
-                    showLogoutDialog = false
+                is ProfileUIEvent.NavigateToEditProfile -> {
                     onNavigateToLogin()
                 }
                 else -> {}
@@ -285,7 +286,8 @@ fun ProfileScreen(
                     onDropdownExpandedChange = { dropdownExpanded = it },
                     onLogoutDialogShowChange = { showLogoutDialog = it },
                     handleLogout = { viewModel.logout() },
-                    onShowDialogChange = { showLogoutDialog = it }
+                    onShowDialogChange = { showLogoutDialog = it },
+                    onNavigateToEditProfile = { onNavigateToEditProfile(user?.id ?: "") }
                 )
             }
             item {
@@ -307,7 +309,8 @@ fun ProfileScreenPreview() {
     EduHubTheme {
         ProfileScreen(
             onNavigateToDetail = {},
-            onNavigateToLogin = {}
+            onNavigateToLogin = {},
+            onNavigateToEditProfile = {}
         )
     }
 }
